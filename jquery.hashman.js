@@ -11,7 +11,6 @@
     var parseHashPairs = function() {
         var hashPairs = [];
         var rawHash = window.location.hash.replace(/^(#(!|))/, '') || '';
-        console.log("");
         if (rawHash === '') { // there are no hashes
             return hashPairs;
         }
