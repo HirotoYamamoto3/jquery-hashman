@@ -37,4 +37,4 @@ $(window).hashman('remove', hashKey);
 
 ## Questions? ##
 * Email: avakarev@gmail.com
-* Twitter: @avakarev
+* Twitter: [@avakarev](http://twitter.com/#!/avakarev/)

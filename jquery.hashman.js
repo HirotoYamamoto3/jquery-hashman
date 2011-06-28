@@ -37,7 +37,7 @@
             }
         }
 
-        if (newHashes.length === 0) { // If empty object will be given
+        if (newHashes.length === 0) { // there are not hashes anymore in url
             // assign to hash property special value - '#!'
             // it will prevent window scroll top, as just '#' does
             window.location.hash = '#!';
