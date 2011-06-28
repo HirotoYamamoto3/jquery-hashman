@@ -9,30 +9,30 @@ There are **put**, **retrieve**, **remove** and **exists** methods.
 Add/change hash key. Takes two parameters: key and value. Value is optional.
 
 #### example 1: ####
-$(window).hashman('put', 'keyboard', 'aus');
+    $(window).hashman('put', 'keyboard', 'aus');
 
 #### example 2: ####
-$(window).hashman('put', 'mute');
+    $(window).hashman('put', 'mute');
 
 ## retrieve ##
 Gets an hash key value. Will return something valuable only of value is set.
 To check existence of hash key in url, despite of its value, try method exists.
 
 #### example ####
-$(window).hashman('retrieve', 'keyboard');
+    $(window).hashman('retrieve', 'keyboard');
 
 ## exists ##
 Return true or false depends on existence hash key in url. Value of that key does not matter.
 
 #### example ####
-$(window).hashman('exists', hashKey);
+    $(window).hashman('exists', hashKey);
 
 ## remove ##
 Try to remove key or key with its value (if it's set) from the url.
 Return true/false depends on key requested hash key existence.
 
 #### example ####
-$(window).hashman('remove', hashKey);
+    $(window).hashman('remove', hashKey);
 
 
 ## Questions? ##
