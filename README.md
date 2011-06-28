@@ -34,6 +34,14 @@ Return true/false depends on key requested hash key existence.
 #### example ####
     $(window).hashman('remove', hashKey);
 
+## jQuery versions compatable ##
+1.3.\*-1.6.\*
+
+## Browsers compatable ##
+MS Internet Explorer 6-9, Firefox 2-5, Chrome 5-12, Safari 3.2-5, Opera 9.6-11.50
+
+## License ##
+Licensed under the MIT license.
 
 ## Questions? ##
 * Email: avakarev@gmail.com
