@@ -35,7 +35,7 @@ Return true/false depends on key requested hash key existence.
     $(window).hashman('remove', hashKey);
 
 ## parse ##
-// Return all existing hashes in object format, that contains pairs key => value
+Return all existing hashes in object format, that contains pairs key => value
 
 #### example ####
     var hashes = $(window).hashman('parse');
