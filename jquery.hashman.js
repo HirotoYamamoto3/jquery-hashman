@@ -100,6 +100,11 @@
             delete hashPairs[hashKey]; // removed hash from parsed object
             setNewHashes(hashPairs); // and set new hash string
             return true;
+        },
+        
+        // Returns all hashes in object format, that contains pairs key => value
+        parse: function() {
+            return parseHashPairs();
         }
     };
 

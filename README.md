@@ -3,7 +3,7 @@
 jquery.hashman.js provides methods to manipulate [hash](http://en.wikipedia.org/wiki/Fragment_identifier) keys and 
 values directly in the browser address bar.
 
-There are **put**, **retrieve**, **remove** and **exists** methods.
+There are **put**, **retrieve**, **remove**, **exists** and **parse** methods.
 
 ## put ##
 Add/change hash key. Takes two parameters: key and value. Value is optional.
@@ -25,7 +25,7 @@ To check existence of hash key in url, despite of its value, try method exists.
 Return true or false depends on existence hash key in url. Value of that key does not matter.
 
 #### example ####
-    $(window).hashman('exists', hashKey);
+    var isKeyboardInUrl = $(window).hashman('exists', 'keyboard');
 
 ## remove ##
 Try to remove key or key with its value (if it's set) from the url.
@@ -33,6 +33,12 @@ Return true/false depends on key requested hash key existence.
 
 #### example ####
     $(window).hashman('remove', hashKey);
+
+## parse ##
+// Return all existing hashes in object format, that contains pairs key => value
+
+#### example ####
+    var hashes = $(window).hashman('parse');
 
 ## jQuery versions compatable ##
 1.3.\*-1.6.\*
