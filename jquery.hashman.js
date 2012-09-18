@@ -96,14 +96,22 @@
             return objectify().hasOwnProperty(hashKey);
         },
 
-        // Remove certain hash from url.
-        remove: function(hashKey) {
-            var hashPairs = objectify();
+        // Remove certain hash/hashes from url.
+        remove: function(arg) {
+            var hashes = objectify(),
+                hashesNum = hashes.length,
+                keys = $.isArray(arg) ? arg : [arg];
 
-            if ( hashPairs.hasOwnProperty(hashKey) ) {
-                delete hashPairs[hashKey]; // Removed hash from parsed object.
-                setNewHashes(hashPairs); // And set new hash string.
+            for (var i = 0, len = keys.length; i < len; i++) {
+                if ( hashes.hasOwnProperty(keys[i]) ) {
+                    delete hashes[keys[i]]; // Remove hash from parsed object.
+                }
             }
+
+            if (hashesNum !== hashes.length) {
+                setNewHashes(hashes);
+            }
+
         },
 
         // Returns all hashes in object format, that contains pairs key => value.
