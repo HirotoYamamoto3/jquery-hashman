@@ -1,5 +1,7 @@
 (function($, window, undefined) {
 
+    var cache = {};
+
     // Parse (window.location.hash) and return javascript object.
     // For example, on url "http://example.com/somepage.html#vkeyboard=on&isearch=bottom&saved"
     // will return
@@ -8,111 +10,115 @@
     //        isearch: 'bottom',
     //        saved: undefined
     //    }
-    var parseHashPairs = function() {
-        var hashPairs = [];
-        var rawHash = window.location.hash.replace(/^(#(!|))/, '') || '';
-        if (rawHash === '') { // there are no hashes
-            return hashPairs;
+    var objectify = function(arg) {
+        var hashStr = (arg || window.location.hash).replace(/^(#(!|))/, '') || '',
+            hashObj = {},
+            kvPairs,
+            pair;
+
+        if (cache[hashStr] !== undefined) { // Return pre-cached hash object.
+            return cache[hashStr];
         }
 
-        // parse hash string into object
-        var hashParts = rawHash.split('&');
-        for (var i = 0, partsLen = hashParts.length; i < partsLen; i ++) {
-            var pair = hashParts[i].split('=');
-            hashPairs[pair[0]] = pair[1];
+        if (hashStr === '') { // There are no hashes at all.
+            return hashObj;
         }
 
-        return hashPairs;
+        kvPairs = hashStr.split('&'); // Parse hash string into object.
+
+        for (var i = 0, len = kvPairs.length; i < len; i++) {
+            pair = kvPairs[i].split('=');
+            hashObj[pair[0]] = pair[1];
+        }
+
+        cache[hashStr] = hashObj;
+
+        return hashObj;
+    };
+
+    // Check if hash key is empty.
+    var isEmpty = function(arg) {
+        return (arg === undefined) || (arg === '');
     };
 
     // Compile object back to string and assign to (window.location.hash).
     var setNewHashes = function(hashPairs) {
         var hashKey,
-            newHashes = [];
+            newHashes = [],
+            hash;
+
         for (hashKey in hashPairs) {
-            if (hashPairs[hashKey] === undefined || hashPairs[hashKey] === '') {
-                newHashes.push(hashKey);
-            } else {
-                newHashes.push(hashKey + '=' + hashPairs[hashKey]);
+            if (hashPairs.hasOwnProperty(hashKey)) {
+                hash = hashKey + ( isEmpty(hashPairs[hashKey]) ? '' : '=' + hashPairs[hashKey] );
+                newHashes.push(hash);
             }
         }
 
-        if (newHashes.length === 0) { // there are not hashes anymore in url
-            // assign to hash property special value - '#!'
-            // it will prevent window scroll top, as just '#' does
-            window.location.hash = '#!';
-        } else {
-            window.location.hash = '#' + newHashes.join('&');
-        }
+        // Set special value to hash - '#!', if there are no hashes anymore in url.
+        // It will prevent window scroll top, as just '#' does.
+        window.location.hash = !newHashes.length ? '#!' : ('#' + newHashes.join('&'));
     };
 
-    // public methods
-    var methods = {
+    var methods = { // Public methods.
 
-        // Put new hash into the ulr, - as a result there is will
-        // appear new hash or will change existing one.
-        // Second parameter hashValue is optional
-        // return value true or false, depends on success putting.
+        // Puts new hash key-value pair into current url.
+        // It will add new or replace existing one.
         put: function(hashKey, hashValue) {
-            
-            if(!hashKey) { // HashKey is not passed, nothing to do.
-                return false;
+
+            if ( isEmpty(hashKey) ) { // If hash key is empty, nothing to do here.
+                return;
             }
 
-            var hashPairs = parseHashPairs();
-            if (hashPairs.hasOwnProperty(hashKey) && hashPairs[hashKey] === hashValue) {
-                // if such hash already exists and has the same value, nothing to do here
-                return false;
+            var hashPairs = objectify();
+
+               // If hash key is already exists and has the same value, nothing to do here.
+            if ( hashPairs.hasOwnProperty(hashKey) && hashPairs[hashKey] === hashValue ) {
+                return;
             }
 
             hashPairs[hashKey] = hashValue;
             setNewHashes(hashPairs);
-            return true;
         },
 
-        // Return hash value of certain hash key.
-        // hashKey parameter is optional. If it will not passed,
-        // whole object with parsed hashed will be returned.
+        // Return hash value of passed hash key.
         retrieve: function(hashKey) {
-            var hashPairs = parseHashPairs();
-            if(!hashKey) { // return whole object with parsed hashes
+            var hashPairs = objectify();
+
+            if ( !hashKey ) { // Return whole object with parsed hashes.
                 return hashPairs;
-            } else if (hashPairs[hashKey]) {
-                return hashPairs[hashKey]; // return value of certain hash
-            } else {
-                return undefined;
+            } else { // Return value of certain hash.
+                return hashPairs[hashKey];
             }
         },
 
-        // Return true if certain hash key is already exists in url.
-        // And return false in other case.
+        // Check if certain hash key is present in url or not.
         exists: function(hashKey) {
-            return parseHashPairs().hasOwnProperty(hashKey);
+            return objectify().hasOwnProperty(hashKey);
         },
 
-        // Cut certain hash from url.
+        // Remove certain hash from url.
         remove: function(hashKey) {
-            var hashPairs = parseHashPairs();
-            if (!hashPairs.hasOwnProperty(hashKey)) { // nothing to remove
-                return false;
-            }
+            var hashPairs = objectify();
 
-            delete hashPairs[hashKey]; // removed hash from parsed object
-            setNewHashes(hashPairs); // and set new hash string
-            return true;
+            if ( hashPairs.hasOwnProperty(hashKey) ) {
+                delete hashPairs[hashKey]; // Removed hash from parsed object.
+                setNewHashes(hashPairs); // And set new hash string.
+            }
         },
-        
-        // Returns all hashes in object format, that contains pairs key => value
+
+        // Returns all hashes in object format, that contains pairs key => value.
         parse: function() {
-            return parseHashPairs();
+            return objectify();
         }
     };
 
     $.fn.hashman = function(method) {
-        if (methods[method]) {
+
+        if ( methods[method] ) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else {
             $.error('Method ' +  method + ' does not exist on jQuery.hashman');
         }
     };
+
 })(jQuery, this);
